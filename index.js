@@ -39,7 +39,7 @@ async function openIa(prompt, from) {
     };
     const response = await axios.post(apiUrl, data, { headers });
     const response_content = response.data.choices[0].message.content;
-
+    await HistoryController.assistant(from, response_content);
     return response_content;
 
 }
