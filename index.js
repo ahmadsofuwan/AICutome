@@ -70,6 +70,7 @@ client.on("ready", async () => {
     client.sendMessage('6281532380661@c.us', 'AI ready');
 });
 client.on('message', async msg => {
+    const chat = await msg.getChat();
 
     var startsWithBot = msg.body.toLowerCase().startsWith("bot");
     if (startsWithBot) {
@@ -78,7 +79,7 @@ client.on('message', async msg => {
 
         await SystemController.insertSystem({ content: data });
         msg.reply('data berhasil di simpan');
-    } else {
+    } else if (!chat.isGroup) {
         const AI = await openIa(msg.body, msg.from);
         msg.reply(AI);
     }
