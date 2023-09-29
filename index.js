@@ -79,7 +79,7 @@ client.on('message', async msg => {
 
         await SystemController.insertSystem({ content: data });
         msg.reply('data berhasil di simpan');
-    } else if (!chat.isGroup) {
+    } else /*if (!chat.isGroup)*/ {
         chat.sendStateTyping();
         const AI = await openIa(msg.body, msg.from);
         msg.reply(AI);
