@@ -19,6 +19,7 @@
     "whatsapp-web.js": "^1.22.2-alpha.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "sequelize-cli": "^6.6.1"
   }
 }
