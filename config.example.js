@@ -8,4 +8,7 @@ module.exports = {
     dialect: 'mysql',
     logging: false,
   },
+  bot:{
+    
+  }
 };

@@ -10,6 +10,7 @@ const HistoryController = require('./controllers/HistoryController');
 //env
 // return
 const openIaKey = process.env.OPENIA;
+const respose = process.env.RESPONSE;
 
 async function openIa(prompt, from, reply_data = null) {
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
@@ -79,11 +80,29 @@ client.on('message', async msg => {
 
         await SystemController.insertSystem({ content: data });
         msg.reply('data berhasil di simpan');
-    } else if (!chat.isGroup) {
+    }
+
+    if (respose == 'chat') {
+        if (!chat.isGroup) {
+            chat.sendStateTyping();
+            const AI = await openIa(msg.body, msg.from);
+            msg.reply(AI);
+        }
+    }
+    if (respose == 'group') {
+        if (chat.isGroup) {
+            chat.sendStateTyping();
+            const AI = await openIa(msg.body, msg.from);
+            msg.reply(AI);
+        }
+    }
+    if (respose == 'all') {
         chat.sendStateTyping();
         const AI = await openIa(msg.body, msg.from);
         msg.reply(AI);
     }
+
+
 });
 
 
