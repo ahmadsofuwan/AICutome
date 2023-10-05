@@ -86,7 +86,7 @@ client.on("ready", async () => {
         START = true;
         console.log('AI ready');
         for (const admint of ADMIN) {
-            // client.sendMessage(admint, 'AI ready');
+            client.sendMessage(admint, 'AI ready');
         }
     }, BOT_RESPONSE_TIMEOUT);
 
