@@ -12,6 +12,8 @@ const HistoryController = require('./controllers/HistoryController');
 const openIaKey = process.env.OPENIA;
 const respose = process.env.RESPONSE;
 const ADMIN = JSON.parse(process.env.ADMIN);
+const BOT_RESPONSE_TIMEOUT = 10000;
+let START = false;
 
 async function openIa(prompt, from, reply_data = null) {
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
@@ -69,13 +71,25 @@ client.on('qr', (qr) => {
 client.initialize();
 client.on("ready", async () => {
     console.log("Client is ready!");
+    setTimeout(() => {
+        START = true;
+        console.log('AI ready');
+        for (const admint of ADMIN) {
+            client.sendMessage(admint, 'AI ready');
+        }
+    }, BOT_RESPONSE_TIMEOUT);
 
-    for (const admint of ADMIN) {
-        client.sendMessage(admint, 'AI ready');
-    }
+
 
 });
+
+
 client.on('message', async msg => {
+    if (!START) {
+        return
+    }
+
+
     const chat = await msg.getChat();
 
     var startsWithBot = msg.body.toLowerCase().startsWith("#bot");
@@ -83,6 +97,7 @@ client.on('message', async msg => {
         const data = msg.body.replace(/^#bot\s+/i, '');
         await SystemController.insertSystem({ content: data });
         msg.reply('data berhasil di simpan');
+        return
     }
 
     if (respose == 'chat') {
