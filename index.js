@@ -69,7 +69,11 @@ client.on('qr', (qr) => {
 client.initialize();
 client.on("ready", async () => {
     console.log("Client is ready!");
-    client.sendMessage('6281532380661@c.us', 'AI ready');
+
+    for (const admint of ADMIN) {
+        client.sendMessage(admint, 'AI ready');
+    }
+
 });
 client.on('message', async msg => {
     const chat = await msg.getChat();
