@@ -6,5 +6,6 @@ module.exports = {
     database: 'your_database_name',
     host: 'localhost',
     dialect: 'mysql',
+    logging: false,
   },
 };

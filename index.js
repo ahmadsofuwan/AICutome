@@ -11,7 +11,7 @@ const HistoryController = require('./controllers/HistoryController');
 // return
 const openIaKey = process.env.OPENIA;
 
-async function openIa(prompt, from) {
+async function openIa(prompt, from, reply_data = null) {
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
     const headers = {
         'Content-Type': 'application/json',
@@ -72,10 +72,10 @@ client.on("ready", async () => {
 client.on('message', async msg => {
     const chat = await msg.getChat();
 
-    var startsWithBot = msg.body.toLowerCase().startsWith("bot");
+    var startsWithBot = msg.body.toLowerCase().startsWith("#bot");
     if (startsWithBot) {
         //penyimpanan data
-        var data = msg.body.replace(/^bot\s+/i, '');
+        const data = msg.body.replace(/^#bot\s+/i, '');
 
         await SystemController.insertSystem({ content: data });
         msg.reply('data berhasil di simpan');
