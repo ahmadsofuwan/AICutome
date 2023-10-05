@@ -1,16 +1,24 @@
 require('dotenv').config();
 const axios = require('axios')
-const { Client, Location, List, Buttons, LegacySessionAuth, LocalAuth, MessageMedia } = require('whatsapp-web.js');
+const express = require('express');
 const qrcode = require('qrcode-terminal');
+const qrcode2 = require('qrcode');
+const fs = require('fs');
+const http = require('http');
+const socketIo = require('socket.io');
+const path = require('path');
+
+const { Client, Location, List, Buttons, LegacySessionAuth, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const SystemController = require('./controllers/SystemController');
 const HistoryController = require('./controllers/HistoryController');
 
-// const path = require('path');
-// console.log(__dirname); // Akan mencetak direktori saat ini
-//env
-// return
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
 const openIaKey = process.env.OPENIA;
 const respose = process.env.RESPONSE;
+const serverport = process.env.PORT;
 const ADMIN = JSON.parse(process.env.ADMIN);
 const BOT_RESPONSE_TIMEOUT = 10000;
 let START = false;
@@ -63,10 +71,13 @@ const client = new Client({
     authStrategy: new LocalAuth(),
 });
 client.on('qr', (qr) => {
-    // Generate and scan this code with your phone
-    client_status = "qr";
     console.log('QR RECEIVED', qr);
+    io.emit('updateQR', qr);
     qrcode.generate(qr, { small: true });
+    qrcode2.toDataURL(qr, (err, url) => {
+        io.emit('qr', url);
+    })
+
 });
 client.initialize();
 client.on("ready", async () => {
@@ -75,11 +86,11 @@ client.on("ready", async () => {
         START = true;
         console.log('AI ready');
         for (const admint of ADMIN) {
-            client.sendMessage(admint, 'AI ready');
+            // client.sendMessage(admint, 'AI ready');
         }
     }, BOT_RESPONSE_TIMEOUT);
 
-
+    io.emit('msg', "Bot Ready");
 
 });
 
@@ -124,21 +135,19 @@ client.on('message', async msg => {
 });
 
 
+app.get('/', (req, res) => {
+    // Mengirim file HTML sebagai respons
+    res.sendFile(__dirname + '/index.html');
+});
 
+app.use(express.static(path.join(__dirname)));
 
-// (async () => {
-//     const data = {
-//         content: 'BEEBEENET',
-//     };
-//     const status = SystemController.insertSystem(data);
-//     console.log(status.toJSON());
-//     // const systems = await SystemController.getSystem();
-//     // const historys = await HistoryController.prompt({
-//     //     from: 'test',
-//     //     content: 'hai',
-//     // });
-//     // // console.log(historys)
-//     // for (const system of historys) {
-//     //     console.log(`ID: ${system.id}, Content: ${system.content}`);
-//     // }
-// })();   
+// Socket.io
+io.on('connection', (socket) => {
+    console.log('connect')
+
+});
+
+server.listen(serverport, () => {
+    console.log('Server berjalan di port ' + serverport);
+});

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>QR Code Page</title>
+</head>
+
+<body>
+    <h1>QR Code</h1>
+    <img id="qrcode" src="" alt="QR Code">
+    <h1 id="msg"></h1>
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://jeromeetienne.github.io/jquery-qrcode/src/jquery.qrcode.js"></script>
+    <script type="text/javascript" src="https://jeromeetienne.github.io/jquery-qrcode/src/qrcode.js"></script>
+
+    <script>
+        const currentUrl = window.location.href;
+        const socket = io(currentUrl);
+
+        socket.on('qr', function (url) {
+            $('#qrcode').attr('src', url);
+            $('#msg').text('')
+        })
+        socket.on('msg', function (msg) {
+            $('#msg').text(msg)
+            $('#qrcode').attr('src', '');
+            console.log(msg)
+        })
+    </script>
+
+</body>
+
+</html>
