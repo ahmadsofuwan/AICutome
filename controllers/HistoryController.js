@@ -10,7 +10,8 @@ async function prompt(data) {
 
         await History.create(historyData);
         const history = await History.findAll({
-            where: { from: data.from }
+            where: { from: data.from },
+            limit: 50
         });
 
         return history;
