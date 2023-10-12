@@ -11,6 +11,7 @@ async function prompt(data) {
         await History.create(historyData);
         const history = await History.findAll({
             where: { from: data.from },
+            order: [['id', 'DESC']],
             limit: 50
         });
 

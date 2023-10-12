@@ -39,9 +39,14 @@ async function openIa(prompt, from, reply_data = null) {
     for (const system of systems) {
         data_AI.push({ role: 'system', content: system.content });
     }
-    for (const history of historys) {
+    // for (const history of historys) {
+    //     data_AI.push({ role: history.role, content: history.content });
+    // }
+    for (let i = historys.length - 1; i >= 0; i--) {
+        const history = historys[i];
         data_AI.push({ role: history.role, content: history.content });
     }
+    
 
     //kirim ai
     const data = {
